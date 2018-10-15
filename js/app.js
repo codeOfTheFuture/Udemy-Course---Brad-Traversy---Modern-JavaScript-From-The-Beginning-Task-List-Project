@@ -12,6 +12,12 @@ loadEventListeners();
 function loadEventListeners() {
   // Add task event
   form.addEventListener('submit', addTask);
+  // Remove task event
+  taskList.addEventListener('click', removeTask);
+  // Clear task event
+  clearBtn.addEventListener('click', clearTasks);
+  // Filter task event
+  filter.addEventListener('keyup', filterTasks);
 }
 
 // Add Task
@@ -29,7 +35,7 @@ function addTask(e) {
   // Create new link element
   const link = document.createElement('a');
   // Add class
-  link.className('delete-item secondary-content');
+  link.className = 'delete-item secondary-content';
   // Add icon html
   link.innerHTML = '<i class = "fa fa-remove"></i>';
   // Append the link to li
@@ -42,4 +48,41 @@ function addTask(e) {
   taskInput.value = '';
 
   e.preventDefault();
+}
+
+// Remove Task
+function removeTask(e) {
+  if(e.target.parentElement.classList.contains('delete-item')) {
+    if(confirm('Are you sure?')) {
+      e.target.parentElement.parentElement.remove();
+    }
+  }
+}
+
+// Clear Tasks
+function clearTasks() {
+  // taskList.innerHTML = '';
+
+  //Faster
+  if(confirm('Are you sure?')) {
+    while(taskList.firstChild) {
+      taskList.removeChild(taskList.firstChild);
+    }
+  }
+
+  // https://jsperf.com/innerhtml-vs-removechild/47
+}
+
+// Filter Tasks
+function filterTasks(e) {
+  const text = e.target.value.toLowerCase();
+  
+  document.querySelectorAll('.collection-item').forEach((task) => {
+    const item = task.firstChild.textContent;
+    if(item.toLowerCase().indexOf(text) != -1) {
+      task.style.display = 'block';
+    } else {
+      task.style.display = 'none';
+    }
+  });
 }
